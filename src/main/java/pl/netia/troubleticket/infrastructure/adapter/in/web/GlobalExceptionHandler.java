@@ -8,7 +8,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.netia.troubleticket.infrastructure.adapter.in.web.dto.ErrorResponse;
-import pl.netia.troubleticket.shared.exception.InvalidStatusTransitionException;
 import pl.netia.troubleticket.shared.exception.TroubleTicketNotFoundException;
 
 import java.util.UUID;
@@ -23,13 +22,6 @@ public class GlobalExceptionHandler {
         log.warn("Not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("TROUBLE_TICKET_NOT_FOUND", ex.getMessage(), requestId()));
-    }
-
-    @ExceptionHandler(InvalidStatusTransitionException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidTransition(InvalidStatusTransitionException ex, HttpServletRequest req) {
-        log.warn("Invalid status transition: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse("INVALID_STATUS_TRANSITION", ex.getMessage(), requestId()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,6 +1,9 @@
 package pl.netia.troubleticket.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.netia.troubleticket.domain.model.Note;
@@ -28,6 +31,7 @@ public class TroubleTicketService implements
     // ── Create ────────────────────────────────────────────────────────────────
 
     @Override
+    @Retryable(retryFor = DataIntegrityViolationException.class, maxAttempts = 2, backoff = @Backoff(delay = 50))
     @Transactional
     public CreateTroubleTicketUseCase.Result create(CreateTroubleTicketUseCase.Command command) {
         Optional<TroubleTicket> existing =
