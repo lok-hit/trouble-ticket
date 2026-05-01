@@ -57,6 +57,9 @@ Walidacja na poziomie DTO (`@Pattern(regexp = "closed")`). Każda inna wartość
 **Mapowanie statusów**
 Enum domenowy (`TroubleTicketStatus`) jest mapowany do wartości API (np. `IN_PROGRESS` → `"inProgress"`) w warstwie web — domena nie zna formatu API.
 
+**Walidacja `serviceId` — przyjęte założenie**
+Kontrakt OpenAPI definiuje odpowiedź `404 ServiceNotFound` dla `POST /troubleTicket`, sugerując weryfikację istnienia usługi w zewnętrznym rejestrze. W v1 przyjęto upraszczające założenie: `serviceId` jest traktowane jako dowolna liczba całkowita ≥ 1 i nie jest walidowane względem rejestru usług. Założenie to wynika z braku specyfikacji rejestru w zadaniu. W środowisku produkcyjnym należałoby dodać port wyjściowy `ServiceRegistry` i jego adapter (np. REST call do systemu CRM/OSS).
+
 **Brak paginacji w v1**
 Zgodnie z kontraktem OpenAPI — `GET /troubleTicket` zwraca pełną listę w tenant scope bez filtrowania.
 

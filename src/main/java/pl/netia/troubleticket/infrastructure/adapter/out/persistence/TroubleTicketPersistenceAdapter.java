@@ -53,7 +53,7 @@ public class TroubleTicketPersistenceAdapter implements TroubleTicketRepository 
     @Override
     public List<TroubleTicket> findAllByTenantId(String tenantId) {
         return ticketRepo.findAllByTenantId(tenantId).stream()
-                .map(this::toDomain)
+                .map(this::toDomainSummary)
                 .toList();
     }
 
@@ -97,6 +97,19 @@ public class TroubleTicketPersistenceAdapter implements TroubleTicketRepository 
                 e.getDescription(),
                 fromDbStatus(e.getStatus()),
                 notes
+        );
+    }
+
+    /** Mapuje encję bez dostępu do kolekcji notes — używany przy listowaniu (brak N+1). */
+    private TroubleTicket toDomainSummary(TroubleTicketEntity e) {
+        return new TroubleTicket(
+                e.getId(),
+                e.getExternalId(),
+                e.getTenantId(),
+                e.getServiceId(),
+                e.getDescription(),
+                fromDbStatus(e.getStatus()),
+                List.of()
         );
     }
 

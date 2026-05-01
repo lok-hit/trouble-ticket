@@ -1,7 +1,10 @@
 spring:
   datasource:
-    url: ${TEST_DATASOURCE_URL:jdbc:tc:postgresql:16-alpine:///troubleticket}
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    # Overridden at runtime by CucumberSpringConfiguration @DynamicPropertySource (Testcontainers)
+    url: jdbc:postgresql://localhost:5432/troubleticket
+    username: tt_user
+    password: tt_pass
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
@@ -12,8 +15,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          # Use a self-signed JWKS in tests (TestJwtConfig provides RSA key)
-          jwk-set-uri: ${TEST_JWKS_URI:http://localhost:0/jwks}
+          # Overridden at runtime by TestSecurityConfig @Primary JwtDecoder bean (RSA key in-memory)
+          issuer-uri: http://test-issuer
 
 logging:
   level:
